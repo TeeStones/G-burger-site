@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G Burger - Wuse 2, Abuja</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --char:#1f130d;
+    --char-2:#2a1a11;
+    --gold:#e8a33d;
+    --ketchup:#c1382b;
+    --paper:#f3ead9;
+    --paper-2:#ece0c9;
+    --ink:#2a1d16;
+    --pickle:#7c8a52;
+    --line: rgba(243,234,217,0.18);
+    --font-display:'Barlow Condensed', sans-serif;
+    --font-body:'Karla', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper); color:var(--ink); font-family:var(--font-body); line-height:1.5; overflow-x:hidden;}
+  img,svg{display:block; max-width:100%;}
+  a{color:inherit;}
+  button{font-family:inherit; cursor:pointer;}
+
+  header.site-nav{position:sticky; top:0; z-index:50; background:var(--char); border-bottom:1px solid var(--line);}
+  .nav-inner{max-width:1180px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:14px 24px; gap:16px;}
+  .wordmark{font-family:var(--font-display); font-weight:800; font-size:26px; letter-spacing:0.5px; color:var(--paper); white-space:nowrap;}
+  .wordmark span{color:var(--gold);}
+  nav.links{display:flex; gap:22px; align-items:center;}
+  nav.links a{color:var(--paper); text-decoration:none; font-size:15px; font-weight:500; opacity:0.85;}
+  nav.links a:hover{opacity:1; color:var(--gold);}
+  .nav-mobile-hide{display:flex;}
+  @media (max-width:820px){ .nav-mobile-hide{display:none;} }
+  .cart-btn{
+    position:relative; background:var(--gold); color:var(--char); border:none;
+    padding:9px 16px; border-radius:3px; font-weight:700; font-size:14px;
+  }
+  .cart-btn .count{
+    position:absolute; top:-7px; right:-7px; background:var(--ketchup); color:#fff;
+    font-size:11px; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  }
+
+  .hero{background:linear-gradient(180deg, var(--char) 0%, var(--char-2) 100%); padding:60px 24px 44px;}
+  .hero-inner{max-width:1180px; margin:0 auto; display:grid; grid-template-columns:1.05fr 0.95fr; gap:44px; align-items:center; min-height:480px;}
+  @media (max-width:900px){ .hero-inner{grid-template-columns:1fr; min-height:auto;} }
+  .hero-badge{display:inline-flex; align-items:center; gap:8px; background:rgba(232,163,61,0.12); border:1px solid rgba(232,163,61,0.4); color:var(--gold); padding:6px 14px; border-radius:100px; font-size:13px; font-weight:600; margin-bottom:22px;}
+  .hero-badge .dot{width:6px; height:6px; border-radius:50%; background:#7ed17e;}
+  h1.hero-title{font-family:var(--font-display); font-weight:800; font-size:clamp(44px, 6.5vw, 76px); line-height:0.94; color:var(--paper); letter-spacing:0.5px;}
+  h1.hero-title .line2{color:var(--gold);}
+  p.hero-sub{color:rgba(243,234,217,0.75); font-size:18px; max-width:440px; margin:20px 0 28px; line-height:1.6;}
+  .hero-actions{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:30px;}
+  .btn-primary{background:var(--gold); color:var(--char); padding:14px 24px; border-radius:3px; font-weight:700; font-size:16px; text-decoration:none; border:none; display:inline-flex; align-items:center; gap:8px;}
+  .btn-primary:hover{background:#f0b34f;}
+  .btn-ghost{background:transparent; color:var(--paper); padding:13px 24px; border-radius:3px; font-weight:600; font-size:16px; text-decoration:none; border:1px solid rgba(243,234,217,0.35);}
+  .btn-ghost:hover{border-color:var(--gold); color:var(--gold);}
+  .hero-stamp{display:inline-flex; flex-direction:column; gap:2px; border:2px solid var(--gold); border-radius:6px; padding:12px 18px; transform:rotate(-4deg); color:var(--paper); width:max-content;}
+  .hero-stamp .rating{font-family:var(--font-display); font-size:28px; font-weight:800; color:var(--gold); line-height:1;}
+  .hero-stamp .rating small{font-size:14px; color:var(--paper); font-weight:600; margin-left:6px;}
+  .hero-stamp .sub{font-size:12px; color:rgba(243,234,217,0.65); margin-top:2px;}
+
+  /* Hero photo - real 3D scroll-linked tilt */
+  .hero-photo-stage{perspective:1400px; height:420px; display:flex; align-items:center; justify-content:center;}
+  .hero-photo-card{
+    width:88%; max-width:420px; aspect-ratio:4/5; border-radius:10px; overflow:hidden;
+    box-shadow:0 30px 60px rgba(0,0,0,0.5); will-change:transform;
+    transform-style:preserve-3d; border:3px solid rgba(232,163,61,0.5);
+  }
+  .hero-photo-card img{width:100%; height:100%; object-fit:cover;}
+  .stage-caption{text-align:center; margin-top:12px; font-size:13px; color:rgba(243,234,217,0.5);}
+
+  .stats-strip{background:var(--gold); color:var(--char);}
+  .stats-inner{max-width:1180px; margin:0 auto; padding:14px 24px; display:flex; flex-wrap:wrap; gap:10px 28px; align-items:center; justify-content:center; font-weight:700; font-size:14px;}
+  .stats-inner .seg{display:flex; align-items:center; gap:8px;}
+  .stats-inner .sep{width:1px; height:16px; background:rgba(31,19,13,0.3);}
+  @media (max-width:640px){ .stats-inner .sep{display:none;} }
+
+  section{padding:80px 24px;}
+  .section-inner{max-width:1180px; margin:0 auto;}
+  h2.section-title{font-family:var(--font-display); font-weight:700; font-size:40px; color:var(--ink); margin-bottom:8px; letter-spacing:0.3px;}
+  p.section-lede{color:#6a5a4a; margin-bottom:40px; max-width:60ch;}
+
+  .about{background:var(--paper);}
+  .about-grid{display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start;}
+  @media (max-width:820px){.about-grid{grid-template-columns:1fr;}}
+  .about p{font-size:17px; color:#4a3a2c; max-width:52ch; margin-bottom:16px;}
+  .about-list{list-style:none; margin-top:22px;}
+  .about-list li{display:flex; gap:14px; padding:13px 0; border-top:1px solid rgba(42,29,22,0.12); font-size:15px; color:#4a3a2c;}
+  .about-list li:last-child{border-bottom:1px solid rgba(42,29,22,0.12);}
+  .about-list .mark{color:var(--ketchup); font-weight:700; font-family:var(--font-display); font-size:18px;}
+
+  /* MENU */
+  .menu{background:var(--char); color:var(--paper);}
+  .menu h2.section-title, .menu p.section-lede{color:var(--paper);}
+  .menu p.section-lede{color:rgba(243,234,217,0.6);}
+  .vat-note{font-size:13px; color:rgba(243,234,217,0.5); margin-top:-28px; margin-bottom:36px;}
+  .cat-block{margin-bottom:54px;}
+  .cat-header{display:grid; grid-template-columns:180px 1fr; gap:22px; align-items:center; margin-bottom:18px;}
+  @media (max-width:640px){.cat-header{grid-template-columns:1fr;}}
+  .cat-photo-wrap{perspective:900px;}
+  .cat-photo{
+    width:100%; aspect-ratio:4/3; border-radius:6px; overflow:hidden;
+    transform:rotateY(-90deg); opacity:0; transition:transform 0.8s cubic-bezier(.2,.8,.2,1), opacity 0.8s ease;
+    transform-origin:left center;
+  }
+  .cat-photo.in-view{transform:rotateY(0deg); opacity:1;}
+  .cat-photo img{width:100%; height:100%; object-fit:cover;}
+  .cat-header h3{font-family:var(--font-display); font-weight:700; font-size:28px; color:var(--gold);}
+  .menu-row{display:flex; align-items:flex-start; gap:14px; padding:14px 0; border-bottom:1px dashed rgba(243,234,217,0.2);}
+  .menu-row:last-child{border-bottom:none;}
+  .menu-row .info{flex:1;}
+  .menu-row .name{font-size:16px; font-weight:600;}
+  .menu-row .desc{font-size:13px; color:rgba(243,234,217,0.55); margin-top:3px; max-width:60ch;}
+  .menu-row .price{font-family:var(--font-display); font-size:19px; color:var(--gold); font-weight:700; white-space:nowrap;}
+  .add-btn{
+    background:transparent; border:1px solid var(--gold); color:var(--gold);
+    width:30px; height:30px; border-radius:50%; font-size:17px; line-height:1; flex-shrink:0;
+    margin-top:2px;
+  }
+  .add-btn:hover{background:var(--gold); color:var(--char);}
+
+  .gallery{background:var(--paper-2);}
+  .filmstrip{display:flex; gap:18px; overflow-x:auto; padding-bottom:8px;}
+  .film{flex:0 0 220px; height:270px; border-radius:4px; overflow:hidden; box-shadow:0 10px 24px rgba(42,29,22,0.18); position:relative;}
+  .film img{width:100%; height:100%; object-fit:cover;}
+  .film span{position:absolute; left:0; right:0; bottom:0; padding:12px 14px; background:linear-gradient(0deg, rgba(0,0,0,0.65), transparent); color:#fff; font-family:var(--font-display); font-size:16px; font-weight:700;}
+
+  .location{background:var(--paper);}
+  .loc-grid{display:grid; grid-template-columns:1fr 1fr; gap:56px;}
+  @media (max-width:820px){.loc-grid{grid-template-columns:1fr;}}
+  .hours-table{width:100%; border-collapse:collapse; margin-top:16px; font-size:15px;}
+  .hours-table td{padding:9px 0; border-top:1px solid rgba(42,29,22,0.12); color:#4a3a2c;}
+  .hours-table td:last-child{text-align:right; font-weight:600; color:var(--ink);}
+  .loc-actions{display:flex; gap:12px; margin-top:24px; flex-wrap:wrap;}
+  .map-embed{width:100%; height:320px; border:0; border-radius:6px; margin-top:20px;}
+
+  footer{background:var(--char-2); color:rgba(243,234,217,0.55); padding:32px 24px; font-size:13px;}
+  .footer-inner{max-width:1180px; margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+
+  /* CART DRAWER */
+  .cart-backdrop{position:fixed; inset:0; background:rgba(20,13,9,0.55); display:none; z-index:300;}
+  .cart-backdrop.open{display:block;}
+  .cart-drawer{position:fixed; top:0; right:-420px; width:400px; max-width:92vw; height:100%; background:var(--paper); z-index:310; box-shadow:-10px 0 30px rgba(0,0,0,0.3); overflow-y:auto; padding:26px; transition:right 0.3s ease;}
+  .cart-drawer.open{right:0;}
+  .cart-drawer h3{font-family:var(--font-display); font-size:24px; margin-bottom:18px;}
+  .cart-item{display:flex; justify-content:space-between; gap:10px; padding:12px 0; border-bottom:1px solid rgba(42,29,22,0.12); font-size:14px;}
+  .cart-item .qty-controls{display:flex; align-items:center; gap:8px; margin-top:4px;}
+  .cart-item .qty-controls button{background:var(--char); color:var(--paper); width:22px; height:22px; border-radius:4px; border:none; font-size:13px;}
+  .cart-empty{color:#6a5a4a; font-size:14px; padding:20px 0;}
+  .cart-total{display:flex; justify-content:space-between; font-weight:700; font-size:17px; margin:16px 0; padding-top:12px; border-top:2px solid var(--ink);}
+  .checkout-field{margin-bottom:12px;}
+  .checkout-field label{display:block; font-size:12px; font-weight:700; color:#4a3a2c; margin-bottom:5px;}
+  .checkout-field input, .checkout-field textarea{width:100%; padding:9px 11px; border:1px solid rgba(42,29,22,0.28); border-radius:4px; font-family:inherit; font-size:14px; background:#fff;}
+  .checkout-field textarea{min-height:60px; resize:vertical;}
+  .geoloc-btn{background:transparent; border:1px dashed rgba(42,29,22,0.4); color:#4a3a2c; width:100%; padding:8px; border-radius:4px; font-size:12px; margin-top:6px;}
+  .geoloc-status{font-size:12px; color:var(--pickle); margin-top:6px; min-height:16px;}
+  .pay-btn{background:var(--gold); border:none; color:var(--char); font-weight:700; padding:13px; width:100%; border-radius:4px; font-size:15px; margin-top:8px;}
+  .pay-btn:disabled{opacity:0.5;}
+  .checkout-status{font-size:13px; margin-top:10px; min-height:18px;}
+  .close-drawer{background:none; border:none; font-size:22px; color:#6a5a4a; position:absolute; top:20px; right:20px;}
+</style>
+</head>
+<body>
+
+<header class="site-nav">
+  <div class="nav-inner">
+    <div class="wordmark">G BURGER<span>.</span></div>
+    <nav class="links nav-mobile-hide">
+      <a href="#menu">Menu</a>
+      <a href="#gallery">Photos</a>
+      <a href="#location">Location</a>
+    </nav>
+    <button class="cart-btn" id="cartBtn">Cart<span class="count" id="cartCount">0</span></button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge"><span class="dot"></span> Open now</div>
+      <h1 class="hero-title">REAL BEEF.<br><span class="line2">REAL BURGERS.</span></h1>
+      <p class="hero-sub" id="tagline-text">Fresh halal beef patties, hand-cut fries, and thick milkshakes - Wuse 2's go-to burger counter. Order for pickup, delivery, or dine in.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#menu">See the menu</a>
+        <a class="btn-ghost" href="https://wa.me/2347087271489" target="_blank" rel="noopener">Order on WhatsApp</a>
+      </div>
+      <div class="hero-stamp">
+        <div class="rating">4.6<small>/ 5</small></div>
+        <div class="sub">558 Google reviews</div>
+      </div>
+    </div>
+    <div>
+      <div class="hero-photo-stage" id="heroStage">
+        <div class="hero-photo-card" id="heroCard">
+          <img src="https://images.unsplash.com/photo-1603508102983-99b101395d1a?w=900&q=80&auto=format&fit=crop" alt="House beef burger">
+        </div>
+      </div>
+      <p class="stage-caption">Scroll for a closer look</p>
+    </div>
+  </div>
+</section>
+
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="seg" id="price-stat">NGN 7,500 - 9,500 per burger</div>
+    <div class="sep"></div>
+    <div class="seg" id="addr-stat">55 Kumasi Cres, Wuse 2, Abuja</div>
+    <div class="sep"></div>
+    <div class="seg">4.6 stars - 558 reviews</div>
+  </div>
+</div>
+
+<section class="about">
+  <div class="section-inner about-grid">
+    <div>
+      <h2 class="section-title">What's cooking</h2>
+      <p id="about-text">A no-shortcuts burger counter in Wuse 2 - beef patties made from fresh 100% halal beef, no additives or fillers, grilled to order and topped with deep-fried onions and our own sauces.</p>
+      <p>Dine in, pick up, or order delivery straight to your door.</p>
+    </div>
+    <ul class="about-list">
+      <li><span class="mark">check</span> 100% halal beef, no additives or fillers</li>
+      <li><span class="mark">check</span> Hand-spun milkshakes in four flavours</li>
+      <li><span class="mark">check</span> G Cafe on-site: espresso, mocha, frappuccino</li>
+      <li><span class="mark">check</span> Order and pay online, or via WhatsApp</li>
+    </ul>
+  </div>
+</section>
+
+<section class="menu" id="menu">
+  <div class="section-inner">
+    <h2 class="section-title">The full menu</h2>
+    <p class="section-lede">Everything on the board, with real prices - tap the plus to add something to your order.</p>
+    <p class="vat-note" id="vat-note">All prices inclusive of VAT.</p>
+    <div id="menuCategories"><!-- filled by JS --></div>
+  </div>
+</section>
+
+<section class="gallery" id="gallery">
+  <div class="section-inner">
+    <h2 class="section-title">From the counter</h2>
+    <p class="section-lede" style="color:#6a5a4a;">Representative food photography while we get real shots of the counter uploaded - swap these out any time from the admin panel.</p>
+    <div class="filmstrip">
+      <div class="film"><img src="https://images.unsplash.com/photo-1603508102983-99b101395d1a?w=500&q=75&auto=format&fit=crop" alt="Beef burger"><span>House Beef Burger</span></div>
+      <div class="film"><img src="https://images.unsplash.com/photo-1667588011209-00ba38093eb0?w=500&q=75&auto=format&fit=crop" alt="G Mex chilli cheese burger"><span>G Mex Chilli Cheese</span></div>
+      <div class="film"><img src="https://images.unsplash.com/photo-1534938665420-4193effeacc4?w=500&q=75&auto=format&fit=crop" alt="French fries"><span>Chilli Cheese Fries</span></div>
+      <div class="film"><img src="https://images.unsplash.com/photo-1583024012457-b6de05b7003a?w=500&q=75&auto=format&fit=crop" alt="Strawberry milkshake"><span>Strawberry Shake</span></div>
+      <div class="film"><img src="https://images.unsplash.com/photo-1544055931-0f1e0a14c892?w=500&q=75&auto=format&fit=crop" alt="Cappuccino"><span>G Cafe Cappuccino</span></div>
+      <div class="film"><img src="https://images.unsplash.com/photo-1720468750651-71bf110a05e5?w=500&q=75&auto=format&fit=crop" alt="Bottled drinks"><span>Drinks</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="location" id="location">
+  <div class="section-inner loc-grid">
+    <div>
+      <h2 class="section-title">Find us</h2>
+      <table class="hours-table" id="hoursTable">
+        <tr><td>Monday - Saturday</td><td>11:00am - 9:30pm</td></tr>
+        <tr><td>Sunday</td><td>12:00pm - 9:00pm</td></tr>
+      </table>
+      <div class="loc-actions">
+        <a class="btn-primary" style="background:var(--ink); color:var(--paper);" href="https://www.google.com/maps/search/?api=1&query=55+Kumasi+Cres+Wuse+2+Abuja" target="_blank" rel="noopener">Get directions</a>
+        <a class="btn-ghost" style="color:var(--ink); border-color:rgba(42,29,22,0.3);" href="tel:+2347087271489">Call</a>
+      </div>
+    </div>
+    <div>
+      <iframe class="map-embed" id="mapEmbed" loading="lazy" src="https://www.google.com/maps?q=55+Kumasi+Crescent+Wuse+2+Abuja+Nigeria&output=embed"></iframe>
+      <p style="margin-top:12px; font-size:13px; color:#6a5a4a;" id="addr-card">55 Kumasi Cres, Wuse 2, Abuja 900288, Federal Capital Territory</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div>(c) 2026 G Burger, Wuse 2. All rights reserved.</div>
+    <div>55 Kumasi Cres, Wuse 2, Abuja</div>
+  </div>
+</footer>
+
+<!-- CART -->
+<div class="cart-backdrop" id="cartBackdrop"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <button class="close-drawer" id="closeCart">&times;</button>
+  <h3>Your order</h3>
+  <div id="cartItems"><div class="cart-empty">Your cart is empty. Add something from the menu.</div></div>
+  <div class="cart-total" id="cartTotal" style="display:none;">
+    <span>Total</span><span id="cartTotalAmount">NGN 0</span>
+  </div>
+
+  <div id="checkoutForm" style="display:none;">
+    <div class="checkout-field"><label>Full name</label><input id="cust-name" placeholder="Your name"></div>
+    <div class="checkout-field"><label>Phone</label><input id="cust-phone" placeholder="080..."></div>
+    <div class="checkout-field">
+      <label>Delivery address</label>
+      <textarea id="cust-address" placeholder="Street, area, landmark"></textarea>
+      <button class="geoloc-btn" id="useLocationBtn">Use my current location</button>
+      <div class="geoloc-status" id="geolocStatus"></div>
+    </div>
+    <button class="pay-btn" id="payBtn">Send order via Instagram</button>
+    <div class="checkout-status" id="checkoutStatus"></div>
+  </div>
+</div>
+
+<script>
+var DEFAULTS = {
+  tagline: "Fresh halal beef patties, hand-cut fries, and thick milkshakes - Wuse 2's go-to burger counter. Order for pickup, delivery, or dine in.",
+  about: "A no-shortcuts burger counter in Wuse 2 - beef patties made from fresh 100% halal beef, no additives or fillers, grilled to order and topped with deep-fried onions and our own sauces.",
+  price: "NGN 7,500 - 9,500 per burger",
+  addr: "55 Kumasi Cres, Wuse 2, Abuja 900288, Federal Capital Territory",
+  addrShort: "55 Kumasi Cres, Wuse 2, Abuja",
+  phone: "2347087271489",
+  instagram: "gburger_abj",
+  vatNote: "All prices inclusive of VAT.",
+  menuCategories: [
+    {
+      name: "The House Burgers",
+      image: "https://images.unsplash.com/photo-1603508102983-99b101395d1a",
+      items: [
+        {name:"House Beef Burger", price:7500, desc:"Juicy beef burger cooked to taste topped with cocktail coleslaw, deep fried onions, mayo and ketchup."},
+        {name:"House Cheese Burger", price:8000, desc:"Juicy beef burger cooked to taste topped with cheese, cocktail coleslaw, deep fried onions, mayo and ketchup."},
+        {name:"House Double Beef Burger", price:8500, desc:"Juicy double beef burger cooked to taste topped with deep fried onions, cocktail coleslaw, fresh sliced cucumber, mayo and ketchup."},
+        {name:"House Double Double", price:9500, desc:""}
+      ]
+    },
+    {
+      name: "The G-Burgers",
+      image: "https://images.unsplash.com/photo-1667588011209-00ba38093eb0",
+      items: [
+        {name:"Big G - Double Cheese Burger", price:9000, desc:"Double juicy beef burger cooked to taste topped with deep fried onions, fresh crisp salad, cheese and the G-Burger sauce."},
+        {name:"G Mex Chilli Cheese Burger", price:8000, desc:"Juicy beef burger topped with crisp salad, deep fried onions, cheese, G sauce, house chilli sauce and sweet vinaigrette. Spicy."}
+      ]
+    },
+    {
+      name: "Fries",
+      image: "https://images.unsplash.com/photo-1534938665420-4193effeacc4",
+      items: [
+        {name:"French Fries", price:4500, desc:""},
+        {name:"Chilli Cheese Fries", price:6800, desc:"Deep fried French fries topped with cheese, house chilli sauce, deep fried onions, cocktail coleslaw, ketchup and house vinaigrette. Spicy."}
+      ]
+    },
+    {
+      name: "Milk Shakes",
+      image: "https://images.unsplash.com/photo-1583024012457-b6de05b7003a",
+      items: [
+        {name:"Strawberry Shake", price:6500, desc:""},
+        {name:"Vanilla Shake", price:6500, desc:""},
+        {name:"Chocolate Shake", price:6500, desc:""},
+        {name:"Cocktail Shake", price:6500, desc:"Vanilla, strawberry and chocolate mix."}
+      ]
+    },
+    {
+      name: "Drinks",
+      image: "https://images.unsplash.com/photo-1720468750651-71bf110a05e5",
+      items: [
+        {name:"Bottled Water", price:300, desc:""},
+        {name:"Pop Drinks", price:500, desc:""}
+      ]
+    },
+    {
+      name: "G Cafe",
+      image: "https://images.unsplash.com/photo-1544055931-0f1e0a14c892",
+      items: [
+        {name:"Espresso", price:2000, desc:""},
+        {name:"Cappuccino", price:4000, desc:""},
+        {name:"Americano", price:3000, desc:""},
+        {name:"Mocha", price:4000, desc:""},
+        {name:"Frappuccino", price:6500, desc:""},
+        {name:"Caramel Frappuccino", price:6500, desc:""},
+        {name:"Tea", price:2500, desc:""},
+        {name:"Spanish Iced Latte", price:4000, desc:""}
+      ]
+    }
+  ]
+};
+
+var content = JSON.parse(JSON.stringify(DEFAULTS));
+var cart = [];
+
+function money(n){
+  return "NGN " + Number(n).toLocaleString('en-NG');
+}
+
+function loadContent(){
+  return fetch('/.netlify/functions/content')
+    .then(function(res){ return res.json(); })
+    .then(function(data){
+      if(data){ content = Object.assign({}, DEFAULTS, data); }
+    })
+    .catch(function(e){ /* defaults are fine */ });
+}
+
+function renderContent(){
+  document.getElementById('tagline-text').textContent = content.tagline;
+  document.getElementById('about-text').textContent = content.about;
+  document.getElementById('price-stat').textContent = content.price;
+  document.getElementById('addr-stat').textContent = content.addrShort || content.addr;
+  document.getElementById('addr-card').textContent = content.addr;
+  document.getElementById('vat-note').textContent = content.vatNote;
+
+  document.querySelectorAll('a[href^="https://wa.me/"]').forEach(function(a){ a.href = "https://wa.me/" + content.phone; });
+  document.querySelectorAll('a[href^="tel:"]').forEach(function(a){ a.href = "tel:+" + content.phone; });
+
+  var wrap = document.getElementById('menuCategories');
+  wrap.innerHTML = "";
+  content.menuCategories.forEach(function(cat, catIdx){
+    var block = document.createElement('div');
+    block.className = 'cat-block';
+
+    var header = document.createElement('div');
+    header.className = 'cat-header';
+    header.innerHTML =
+      '<div class="cat-photo-wrap"><div class="cat-photo" data-cat="' + catIdx + '"><img src="' + cat.image + '?w=500&q=75&auto=format&fit=crop" alt="' + cat.name + '"></div></div>' +
+      '<h3>' + cat.name + '</h3>';
+    block.appendChild(header);
+
+    cat.items.forEach(function(item, itemIdx){
+      var row = document.createElement('div');
+      row.className = 'menu-row';
+      row.innerHTML =
+        '<div class="info"><div class="name">' + item.name + '</div>' +
+        (item.desc ? '<div class="desc">' + item.desc + '</div>' : '') + '</div>' +
+        '<div class="price">' + money(item.price) + '</div>' +
+        '<button class="add-btn" data-cat="' + catIdx + '" data-item="' + itemIdx + '" title="Add to cart">+</button>';
+      block.appendChild(row);
+    });
+
+    wrap.appendChild(block);
+  });
+
+  wrap.querySelectorAll('.add-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var catIdx = +btn.dataset.cat;
+      var itemIdx = +btn.dataset.item;
+      var item = content.menuCategories[catIdx].items[itemIdx];
+      addToCart(item);
+    });
+  });
+
+  observeCatPhotos();
+}
+
+/* CART */
+function addToCart(item){
+  var existing = cart.find(function(c){ return c.name === item.name; });
+  if(existing){ existing.qty += 1; }
+  else{ cart.push({ name:item.name, price:item.price, qty:1 }); }
+  renderCart();
+  openCart();
+}
+
+function renderCart(){
+  var wrap = document.getElementById('cartItems');
+  var totalWrap = document.getElementById('cartTotal');
+  var checkoutForm = document.getElementById('checkoutForm');
+  var countEl = document.getElementById('cartCount');
+
+  var totalQty = cart.reduce(function(s,c){ return s + c.qty; }, 0);
+  countEl.textContent = totalQty;
+
+  if(cart.length === 0){
+    wrap.innerHTML = '<div class="cart-empty">Your cart is empty. Add something from the menu.</div>';
+    totalWrap.style.display = 'none';
+    checkoutForm.style.display = 'none';
+    return;
+  }
+
+  wrap.innerHTML = "";
+  var total = 0;
+  cart.forEach(function(c, idx){
+    total += c.price * c.qty;
+    var row = document.createElement('div');
+    row.className = 'cart-item';
+    row.innerHTML =
+      '<div><div>' + c.name + '</div><div class="qty-controls">' +
+      '<button data-dec="' + idx + '">-</button><span>' + c.qty + '</span><button data-inc="' + idx + '">+</button>' +
+      '</div></div><div>' + money(c.price * c.qty) + '</div>';
+    wrap.appendChild(row);
+  });
+
+  wrap.querySelectorAll('[data-inc]').forEach(function(b){
+    b.addEventListener('click', function(){ cart[+b.dataset.inc].qty += 1; renderCart(); });
+  });
+  wrap.querySelectorAll('[data-dec]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var idx = +b.dataset.dec;
+      cart[idx].qty -= 1;
+      if(cart[idx].qty <= 0) cart.splice(idx, 1);
+      renderCart();
+    });
+  });
+
+  document.getElementById('cartTotalAmount').textContent = money(total);
+  totalWrap.style.display = 'flex';
+  checkoutForm.style.display = 'block';
+}
+
+function openCart(){
+  document.getElementById('cartDrawer').classList.add('open');
+  document.getElementById('cartBackdrop').classList.add('open');
+}
+function closeCart(){
+  document.getElementById('cartDrawer').classList.remove('open');
+  document.getElementById('cartBackdrop').classList.remove('open');
+}
+document.getElementById('cartBtn').addEventListener('click', openCart);
+document.getElementById('closeCart').addEventListener('click', closeCart);
+document.getElementById('cartBackdrop').addEventListener('click', closeCart);
+
+/* GEOLOCATION for delivery */
+document.getElementById('useLocationBtn').addEventListener('click', function(){
+  var statusEl = document.getElementById('geolocStatus');
+  if(!navigator.geolocation){
+    statusEl.textContent = "Geolocation isn't available on this device - please type your address.";
+    return;
+  }
+  statusEl.textContent = "Getting your location...";
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var lat = pos.coords.latitude.toFixed(5);
+    var lng = pos.coords.longitude.toFixed(5);
+    window.__custLocation = { lat: lat, lng: lng };
+    statusEl.textContent = "Location captured (" + lat + ", " + lng + ") - add any extra directions above.";
+  }, function(err){
+    statusEl.textContent = "Couldn't get your location - please type your address instead.";
+  });
+});
+
+/* CHECKOUT - hands the order off to Instagram DM */
+document.getElementById('payBtn').addEventListener('click', function(){
+  var name = document.getElementById('cust-name').value.trim();
+  var phone = document.getElementById('cust-phone').value.trim();
+  var address = document.getElementById('cust-address').value.trim();
+  var statusEl = document.getElementById('checkoutStatus');
+
+  if(!name || !phone || !address){
+    statusEl.textContent = "Please fill in your name, phone and delivery address.";
+    statusEl.style.color = "#c1382b";
+    return;
+  }
+  if(cart.length === 0){
+    statusEl.textContent = "Your cart is empty.";
+    statusEl.style.color = "#c1382b";
+    return;
+  }
+
+  var total = cart.reduce(function(s,c){ return s + c.price * c.qty; }, 0);
+
+  var lines = [];
+  lines.push("New order from " + name);
+  lines.push("Phone: " + phone);
+  lines.push("Deliver to: " + address);
+  if(window.__custLocation){
+    lines.push("Location pin: " + window.__custLocation.lat + ", " + window.__custLocation.lng);
+  }
+  lines.push("");
+  cart.forEach(function(c){
+    lines.push(c.qty + " x " + c.name + " - " + money(c.price * c.qty));
+  });
+  lines.push("");
+  lines.push("Total: " + money(total));
+  var message = lines.join("\n");
+
+  var handle = content.instagram || "gburger_abj";
+
+  function openInstagram(){
+    window.open("https://ig.me/m/" + handle, "_blank");
+  }
+
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(message).then(function(){
+      statusEl.textContent = "Order copied - paste it into the Instagram chat that just opened, then hit send.";
+      statusEl.style.color = "var(--pickle)";
+      openInstagram();
+    }).catch(function(){
+      statusEl.textContent = "Couldn't copy automatically - opening Instagram, please type your order in manually.";
+      statusEl.style.color = "#c1382b";
+      openInstagram();
+    });
+  }else{
+    statusEl.textContent = "Opening Instagram - please type your order in manually.";
+    statusEl.style.color = "#6a5a4a";
+    openInstagram();
+  }
+});
+
+/* 3D scroll-linked hero photo tilt */
+function updateHeroTilt(){
+  var stage = document.getElementById('heroStage');
+  var card = document.getElementById('heroCard');
+  if(!stage || !card) return;
+  var rect = stage.getBoundingClientRect();
+  var vh = window.innerHeight;
+  var progress = (vh/2 - rect.top) / (vh * 0.9);
+  progress = Math.max(-1, Math.min(1, progress));
+  var rotateY = progress * 18;
+  var rotateX = progress * -6;
+  var translateZ = -60 + Math.abs(progress) * -40;
+  card.style.transform = 'rotateY(' + rotateY + 'deg) rotateX(' + rotateX + 'deg) translateZ(' + translateZ + 'px)';
+}
+window.addEventListener('scroll', updateHeroTilt, {passive:true});
+window.addEventListener('resize', updateHeroTilt);
+window.addEventListener('load', updateHeroTilt);
+
+/* 3D flip-in for menu category photos as they scroll into view */
+function observeCatPhotos(){
+  var photos = document.querySelectorAll('.cat-photo');
+  if(!('IntersectionObserver' in window)){
+    photos.forEach(function(p){ p.classList.add('in-view'); });
+    return;
+  }
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  photos.forEach(function(p){ obs.observe(p); });
+}
+
+loadContent().then(renderContent);
+updateHeroTilt();
+</script>
+</body>
+</html>
