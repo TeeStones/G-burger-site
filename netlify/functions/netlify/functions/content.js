@@ -17,10 +17,14 @@ exports.handler = async (event) => {
       return { statusCode: 400, headers, body: JSON.stringify({ error: "Bad request" }) };
     }
 
-    if (body.password !== WuseGrill47xK ) {
+    // Password is checked here, on the server — it never ships in the
+    // page source, unlike the earlier client-side-only version.
+    if (body.password !== process.env.ADMIN_PASSWORD) {
       return { statusCode: 401, headers, body: JSON.stringify({ error: "Wrong password" }) };
     }
 
+    // Login screen calls this with verifyOnly:true just to check the
+    // password, without writing anything.
     if (body.verifyOnly) {
       return { statusCode: 200, headers, body: JSON.stringify({ ok: true }) };
     }
