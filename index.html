@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Burger — Wuse 2, Abuja</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --char:#1f130d;
+    --char-2:#2a1a11;
+    --gold:#e8a33d;
+    --gold-dim:#c8862a;
+    --ketchup:#c1382b;
+    --paper:#f3ead9;
+    --paper-2:#ece0c9;
+    --ink:#2a1d16;
+    --pickle:#7c8a52;
+    --line: rgba(243,234,217,0.18);
+    --font-display:'Barlow Condensed', sans-serif;
+    --font-body:'Karla', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+  img,svg{display:block; max-width:100%;}
+  a{color:inherit;}
+  button{font-family:inherit; cursor:pointer;}
+
+  /* ---------- NAV ---------- */
+  header.site-nav{
+    position:sticky; top:0; z-index:50;
+    background:var(--char);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1180px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px;
+  }
+  .wordmark{
+    font-family:var(--font-display);
+    font-weight:800; font-size:26px; letter-spacing:0.5px;
+    color:var(--paper);
+  }
+  .wordmark span{color:var(--gold);}
+  nav.links{display:flex; gap:28px; align-items:center;}
+  nav.links a{
+    color:var(--paper); text-decoration:none; font-size:15px; font-weight:500;
+    opacity:0.85;
+  }
+  nav.links a:hover{opacity:1; color:var(--gold);}
+  .nav-cta{
+    background:var(--gold); color:var(--char); border:none;
+    padding:9px 18px; border-radius:3px; font-weight:700; font-size:14px;
+    text-decoration:none; display:inline-block;
+  }
+  .nav-cta:hover{background:#f0b34f;}
+  .nav-mobile-hide{display:flex;}
+  @media (max-width:760px){ .nav-mobile-hide{display:none;} }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:linear-gradient(180deg, var(--char) 0%, var(--char-2) 100%);
+    position:relative;
+    padding:64px 24px 40px;
+    overflow:hidden;
+  }
+  .hero-inner{
+    max-width:1180px; margin:0 auto;
+    display:grid; grid-template-columns:1.05fr 0.95fr; gap:40px;
+    align-items:center;
+    min-height:560px;
+  }
+  @media (max-width:900px){
+    .hero-inner{grid-template-columns:1fr; min-height:auto;}
+  }
+  .hero-badge{
+    display:inline-flex; align-items:center; gap:8px;
+    background:rgba(232,163,61,0.12); border:1px solid rgba(232,163,61,0.4);
+    color:var(--gold); padding:6px 14px; border-radius:100px;
+    font-size:13px; font-weight:600; margin-bottom:22px;
+  }
+  .hero-badge .dot{width:6px; height:6px; border-radius:50%; background:#7ed17e;}
+  h1.hero-title{
+    font-family:var(--font-display); font-weight:800;
+    font-size:clamp(48px, 7vw, 84px);
+    line-height:0.92; color:var(--paper);
+    letter-spacing:0.5px;
+  }
+  h1.hero-title .line2{color:var(--gold);}
+  p.hero-sub{
+    color:rgba(243,234,217,0.75); font-size:18px; max-width:440px;
+    margin:22px 0 30px; line-height:1.6;
+  }
+  .hero-actions{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:34px;}
+  .btn-primary{
+    background:var(--gold); color:var(--char);
+    padding:14px 26px; border-radius:3px; font-weight:700; font-size:16px;
+    text-decoration:none; border:none; display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-primary:hover{background:#f0b34f;}
+  .btn-ghost{
+    background:transparent; color:var(--paper);
+    padding:13px 26px; border-radius:3px; font-weight:600; font-size:16px;
+    text-decoration:none; border:1px solid rgba(243,234,217,0.35);
+  }
+  .btn-ghost:hover{border-color:var(--gold); color:var(--gold);}
+  .hero-stamp{
+    display:inline-flex; flex-direction:column; gap:2px;
+    border:2px solid var(--gold); border-radius:6px;
+    padding:12px 18px; transform:rotate(-4deg);
+    color:var(--paper); width:max-content;
+  }
+  .hero-stamp .rating{font-family:var(--font-display); font-size:28px; font-weight:800; color:var(--gold); line-height:1;}
+  .hero-stamp .rating small{font-size:14px; color:var(--paper); font-weight:600; margin-left:6px;}
+  .hero-stamp .sub{font-size:12px; color:rgba(243,234,217,0.65); margin-top:2px;}
+
+  /* ---------- 3D exploding burger ---------- */
+  .burger-stage{
+    perspective:1100px;
+    position:relative;
+    height:480px;
+  }
+  .burger-layers{
+    position:relative;
+    width:100%; height:100%;
+    transform-style:preserve-3d;
+  }
+  .layer{
+    position:absolute;
+    left:50%; top:50%;
+    transform-style:preserve-3d;
+    will-change:transform;
+    transition:transform 0.05s linear;
+  }
+  .layer svg{display:block;}
+  #layer-top    { z-index:6; }
+  #layer-lettuce{ z-index:5; }
+  #layer-cheese { z-index:4; }
+  #layer-patty  { z-index:3; }
+  #layer-tomato { z-index:2; }
+  #layer-bottom { z-index:1; }
+  .stage-caption{
+    text-align:center; margin-top:10px; font-size:13px;
+    color:rgba(243,234,217,0.55); font-style:normal;
+  }
+
+  /* ---------- STATS STRIP ---------- */
+  .stats-strip{
+    background:var(--gold); color:var(--char);
+  }
+  .stats-inner{
+    max-width:1180px; margin:0 auto; padding:14px 24px;
+    display:flex; flex-wrap:wrap; gap:10px 28px; align-items:center; justify-content:center;
+    font-weight:700; font-size:14px;
+  }
+  .stats-inner .seg{display:flex; align-items:center; gap:8px;}
+  .stats-inner .sep{width:1px; height:16px; background:rgba(31,19,13,0.3);}
+  @media (max-width:640px){ .stats-inner .sep{display:none;} }
+
+  /* ---------- SECTION shared ---------- */
+  section{padding:88px 24px;}
+  .section-inner{max-width:1180px; margin:0 auto;}
+  h2.section-title{
+    font-family:var(--font-display); font-weight:700; font-size:42px;
+    color:var(--ink); margin-bottom:18px; letter-spacing:0.3px;
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about{background:var(--paper);}
+  .about-grid{display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start;}
+  @media (max-width:820px){.about-grid{grid-template-columns:1fr;}}
+  .about p{font-size:17px; color:#4a3a2c; max-width:52ch; margin-bottom:16px;}
+  .about-list{list-style:none; margin-top:26px;}
+  .about-list li{
+    display:flex; gap:14px; padding:14px 0; border-top:1px solid rgba(42,29,22,0.12);
+    font-size:15px; color:#4a3a2c;
+  }
+  .about-list li:last-child{border-bottom:1px solid rgba(42,29,22,0.12);}
+  .about-list .mark{color:var(--ketchup); font-weight:700; font-family:var(--font-display); font-size:18px;}
+
+  /* ---------- MENU (diner board style) ---------- */
+  .menu{background:var(--char); color:var(--paper);}
+  .menu h2.section-title{color:var(--paper);}
+  .menu-note{color:rgba(243,234,217,0.6); margin-bottom:44px; max-width:60ch;}
+  .menu-groups{display:grid; grid-template-columns:1fr 1fr; gap:56px;}
+  @media (max-width:820px){.menu-groups{grid-template-columns:1fr;}}
+  .menu-group h3{
+    font-family:var(--font-display); font-weight:700; font-size:24px;
+    color:var(--gold); margin-bottom:18px; letter-spacing:0.3px;
+  }
+  .menu-row{
+    display:flex; align-items:baseline; gap:8px;
+    padding:11px 0; border-bottom:1px dashed rgba(243,234,217,0.22);
+    font-size:16px;
+  }
+  .menu-row .name{white-space:nowrap;}
+  .menu-row .leader{flex:1; border-bottom:1px dotted rgba(243,234,217,0.3); transform:translateY(-4px);}
+  .menu-row .tag{
+    font-size:12px; color:var(--gold); border:1px solid rgba(232,163,61,0.45);
+    padding:2px 8px; border-radius:100px; white-space:nowrap;
+  }
+
+  /* ---------- GALLERY (filmstrip) ---------- */
+  .gallery{background:var(--paper-2);}
+  .filmstrip{
+    display:flex; gap:18px; overflow-x:auto; padding-bottom:8px;
+    scrollbar-width:thin;
+  }
+  .film{
+    flex:0 0 220px; height:270px; border-radius:2px;
+    background:linear-gradient(160deg, var(--gold) 0%, var(--ketchup) 100%);
+    position:relative; padding:14px;
+    display:flex; align-items:flex-end;
+    box-shadow:0 10px 24px rgba(42,29,22,0.18);
+  }
+  .film:nth-child(2n){background:linear-gradient(160deg, #d8b26a 0%, #8a5a34 100%);}
+  .film:nth-child(3n){background:linear-gradient(160deg, var(--pickle) 0%, #4d5734 100%);}
+  .film span{
+    color:rgba(255,255,255,0.92); font-family:var(--font-display); font-size:18px; font-weight:700;
+  }
+
+  /* ---------- LOCATION ---------- */
+  .location{background:var(--paper);}
+  .loc-grid{display:grid; grid-template-columns:1fr 1fr; gap:60px;}
+  @media (max-width:820px){.loc-grid{grid-template-columns:1fr;}}
+  .hours-table{width:100%; border-collapse:collapse; margin-top:18px; font-size:15px;}
+  .hours-table td{padding:9px 0; border-top:1px solid rgba(42,29,22,0.12); color:#4a3a2c;}
+  .hours-table td:last-child{text-align:right; font-weight:600; color:var(--ink);}
+  .loc-actions{display:flex; gap:12px; margin-top:26px; flex-wrap:wrap;}
+  .loc-card{
+    background:var(--char); color:var(--paper); border-radius:4px; padding:30px;
+  }
+  .loc-card .addr{font-family:var(--font-display); font-size:26px; color:var(--gold); margin-bottom:8px;}
+  .loc-card p{color:rgba(243,234,217,0.7); margin-bottom:4px;}
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--char-2); color:rgba(243,234,217,0.55); padding:32px 24px; font-size:13px;}
+  .footer-inner{max-width:1180px; margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+
+
+</style>
+</head>
+<body>
+
+<header class="site-nav">
+  <div class="nav-inner">
+    <div class="wordmark">BURGER<span>.</span></div>
+    <nav class="links nav-mobile-hide">
+      <a href="#menu">Menu</a>
+      <a href="#gallery">Photos</a>
+      <a href="#location">Location</a>
+      <a class="nav-cta" href="https://wa.me/2347087271489" target="_blank" rel="noopener">Order now</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge"><span class="dot"></span> Open now · closes 9:30pm</div>
+      <h1 class="hero-title">SMASH<br><span class="line2">IT. STACK IT.</span></h1>
+      <p class="hero-sub" id="tagline-text">Thick milkshakes, char-grilled patties, and Wuse 2's most argued-about cheeseburger. Order in for pickup or delivery tonight.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="https://wa.me/2347087271489" target="_blank" rel="noopener">Order on WhatsApp</a>
+        <a class="btn-ghost" href="tel:+2347087271489">Call 0708 727 1489</a>
+      </div>
+      <div class="hero-stamp">
+        <div class="rating">4.6<small>/ 5</small></div>
+        <div class="sub">558 Google reviews</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="burger-stage" id="burgerStage">
+        <div class="burger-layers" id="burgerLayers">
+          <div class="layer" id="layer-top">
+            <svg width="260" height="90" viewBox="0 0 260 90"><path d="M10,90 Q10,10 130,10 Q250,10 250,90 Z" fill="#e8a33d"/><g fill="#f3ead9"><circle cx="70" cy="30" r="4"/><circle cx="110" cy="20" r="4"/><circle cx="150" cy="26" r="4"/><circle cx="190" cy="34" r="4"/><circle cx="130" cy="42" r="4"/></g></svg>
+          </div>
+          <div class="layer" id="layer-lettuce">
+            <svg width="270" height="34" viewBox="0 0 270 34"><path d="M0,18 Q20,0 40,16 Q60,32 80,14 Q100,0 120,16 Q140,32 160,14 Q180,0 200,16 Q220,32 240,14 Q260,0 270,16 L270,34 L0,34 Z" fill="#7c8a52"/></svg>
+          </div>
+          <div class="layer" id="layer-cheese">
+            <svg width="260" height="26" viewBox="0 0 260 26"><path d="M0,0 L260,0 L250,26 L10,26 Z" fill="#e6b940"/></svg>
+          </div>
+          <div class="layer" id="layer-patty">
+            <svg width="250" height="34" viewBox="0 0 250 34"><rect x="0" y="0" width="250" height="34" rx="14" fill="#6b3f2a"/></svg>
+          </div>
+          <div class="layer" id="layer-tomato">
+            <svg width="240" height="20" viewBox="0 0 240 20"><rect x="0" y="0" width="240" height="20" rx="8" fill="#c1382b"/></svg>
+          </div>
+          <div class="layer" id="layer-bottom">
+            <svg width="260" height="46" viewBox="0 0 260 46"><path d="M10,0 Q0,46 30,46 L230,46 Q260,46 250,0 Z" fill="#d68f34"/></svg>
+          </div>
+        </div>
+      </div>
+      <p class="stage-caption">Scroll to build the burger</p>
+    </div>
+  </div>
+</section>
+
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="seg" id="price-stat">₦10,000–20,000 per person</div>
+    <div class="sep"></div>
+    <div class="seg" id="addr-stat">55 Kumasi Cres, Wuse 2, Abuja</div>
+    <div class="sep"></div>
+    <div class="seg">4.6★ · 558 reviews</div>
+  </div>
+</div>
+
+<section class="about">
+  <div class="section-inner about-grid">
+    <div>
+      <h2 class="section-title">What's cooking</h2>
+      <p id="about-text">A no-shortcuts burger counter in Wuse 2 — beef patties on the grill, buns toasted to order, shakes churned thick enough to need a spoon. Come hungry, leave full.</p>
+      <p>Dine in, pick up, or order delivery straight to your door.</p>
+    </div>
+    <ul class="about-list">
+      <li><span class="mark">✓</span> Beef patties, grilled fresh per order</li>
+      <li><span class="mark">✓</span> Hand-spun milkshakes in six flavours</li>
+      <li><span class="mark">✓</span> Chili cheese fries side, made to share</li>
+      <li><span class="mark">✓</span> WhatsApp ordering, fast pickup</li>
+    </ul>
+  </div>
+</section>
+
+<section class="menu" id="menu">
+  <div class="section-inner">
+    <h2 class="section-title">On the board</h2>
+    <p class="menu-note">A few of the house favourites — the full menu's longer, ask on WhatsApp for anything not listed here.</p>
+    <div class="menu-groups" id="menuGroups">
+      <!-- filled by JS from data -->
+    </div>
+  </div>
+</section>
+
+<section class="gallery" id="gallery">
+  <div class="section-inner">
+    <h2 class="section-title">From the counter</h2>
+    <div class="filmstrip">
+      <div class="film"><span>House Double Beef</span></div>
+      <div class="film"><span>Chili Cheese Fries</span></div>
+      <div class="film"><span>Oreo Milkshake</span></div>
+      <div class="film"><span>Grill in Motion</span></div>
+      <div class="film"><span>Strawberry Shake</span></div>
+      <div class="film"><span>The Full Stack</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="location" id="location">
+  <div class="section-inner loc-grid">
+    <div>
+      <h2 class="section-title">Find us</h2>
+      <table class="hours-table" id="hoursTable">
+        <tr><td>Monday – Saturday</td><td>11:00am – 9:30pm</td></tr>
+        <tr><td>Sunday</td><td>12:00pm – 9:00pm</td></tr>
+      </table>
+      <div class="loc-actions">
+        <a class="btn-primary" style="background:var(--ink); color:var(--paper);" href="https://www.google.com/maps/search/?api=1&query=55+Kumasi+Cres+Wuse+2+Abuja" target="_blank" rel="noopener">Get directions</a>
+        <a class="btn-ghost" style="color:var(--ink); border-color:rgba(42,29,22,0.3);" href="tel:+2347087271489">Call</a>
+      </div>
+    </div>
+    <div class="loc-card">
+      <div class="addr" id="addr-card">55 Kumasi Cres, Wuse 2</div>
+      <p>Abuja 900288, Federal Capital Territory</p>
+      <p style="margin-top:14px;">0708 727 1489</p>
+      <p>Order on WhatsApp for pickup or delivery</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div>© 2026 Burger, Wuse 2. All rights reserved.</div>
+    <div>55 Kumasi Cres, Wuse 2, Abuja</div>
+  </div>
+</footer>
+
+<script>
+// ---------- Default content ----------
+const DEFAULTS = {
+  tagline: "Thick milkshakes, char-grilled patties, and Wuse 2's most argued-about cheeseburger. Order in for pickup or delivery tonight.",
+  about: "A no-shortcuts burger counter in Wuse 2 — beef patties on the grill, buns toasted to order, shakes churned thick enough to need a spoon. Come hungry, leave full.",
+  price: "₦10,000–20,000 per person",
+  addr: "55 Kumasi Cres, Wuse 2, Abuja",
+  phone: "2347087271489",
+  menu: [
+    {group:"Burgers", name:"House Beef Burger", tag:"classic"},
+    {group:"Burgers", name:"House Double Beef Burger", tag:"big"},
+    {group:"Burgers", name:"G Mex Chilli Cheese Burger", tag:"spicy"},
+    {group:"Burgers", name:"Hot Chilly Cheeseburger", tag:"spicy"},
+    {group:"Burgers", name:"House Chili Cheese Burger", tag:"spicy"},
+    {group:"Burgers", name:"House Cheese Burger", tag:"classic"},
+    {group:"Shakes & Sides", name:"Vanilla Shake", tag:""},
+    {group:"Shakes & Sides", name:"Strawberry Milkshake", tag:""},
+    {group:"Shakes & Sides", name:"Oreo Vanilla Milkshake", tag:""},
+    {group:"Shakes & Sides", name:"2 in One Vanilla & Strawberry", tag:""},
+    {group:"Shakes & Sides", name:"Burger and Chili Cheese Fries", tag:""},
+    {group:"Shakes & Sides", name:"Double Patty Burger and Spicy Cheesy Chips", tag:""}
+  ]
+};
+
+const STORAGE_KEY = "burger-site-content";
+let content = JSON.parse(JSON.stringify(DEFAULTS));
+
+// ---------- Render ----------
+function renderContent(){
+  document.getElementById('tagline-text').textContent = content.tagline;
+  document.getElementById('about-text').textContent = content.about;
+  document.getElementById('price-stat').textContent = content.price;
+  document.getElementById('addr-stat').textContent = content.addr;
+  document.getElementById('addr-card').textContent = content.addr;
+  const waLinks = document.querySelectorAll('a[href^="https://wa.me/"]');
+  waLinks.forEach(a => a.href = "https://wa.me/" + content.phone);
+  document.querySelectorAll('a[href^="tel:"]').forEach(a => a.href = "tel:+" + content.phone);
+
+  const groupsWrap = document.getElementById('menuGroups');
+  groupsWrap.innerHTML = "";
+  const groups = {};
+  content.menu.forEach(item => {
+    if(!groups[item.group]) groups[item.group] = [];
+    groups[item.group].push(item);
+  });
+  Object.keys(groups).forEach(g => {
+    const div = document.createElement('div');
+    div.className = 'menu-group';
+    const h3 = document.createElement('h3');
+    h3.textContent = g;
+    div.appendChild(h3);
+    groups[g].forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'menu-row';
+      row.innerHTML = `<span class="name">${item.name}</span><span class="leader"></span>` + (item.tag ? `<span class="tag">${item.tag}</span>` : '');
+      div.appendChild(row);
+    });
+    groupsWrap.appendChild(div);
+  });
+}
+
+async function loadContent(){
+  try{
+    const res = await fetch('/.netlify/functions/content');
+    const data = await res.json();
+    if(data){
+      content = Object.assign({}, DEFAULTS, data);
+    }
+  }catch(e){
+    // backend not reachable yet — defaults are fine
+  }
+  renderContent();
+}
+loadContent();
+
+// ---------- 3D exploding burger scroll effect ----------
+const layers = ['layer-top','layer-lettuce','layer-cheese','layer-patty','layer-tomato','layer-bottom'];
+const offsets = [-190, -90, -30, 10, 60, 130];   // rest position spread (assembled-ish)
+const explode = [-40, -18, -6, 4, 18, 44];       // extra px per explode unit
+const rotate  = [-14, -8, -4, 2, 8, 16];         // deg per explode unit
+
+function updateBurger(){
+  const stage = document.getElementById('burgerStage');
+  if(!stage) return;
+  const rect = stage.getBoundingClientRect();
+  const vh = window.innerHeight;
+  // progress 0 -> stage centered in view, 1 -> stage scrolled well past top
+  let progress = (vh/2 - rect.top) / (vh * 0.9);
+  progress = Math.max(0, Math.min(1, progress));
+
+  layers.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    const baseY = offsets[i];
+    const extra = explode[i] * progress * 4;
+    const rot = rotate[i] * progress;
+    el.style.transform = `translate(-50%, ${baseY + extra}px) rotateX(${rot}deg) rotateZ(${progress*2}deg)`;
+  });
+}
+window.addEventListener('scroll', updateBurger, {passive:true});
+window.addEventListener('resize', updateBurger);
+window.addEventListener('load', updateBurger);
+updateBurger();
+
+// This site only ever reads shared content — all editing happens on the
+// separate /admin site, which writes to the same storage key.
+</script>
+</body>
+</html>
