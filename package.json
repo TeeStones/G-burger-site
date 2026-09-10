@@ -1,7 +1,0 @@
-{
-  "name": "burger-site",
-  "private": true,
-  "dependencies": {
-    "@netlify/blobs": "^8.0.0"
-  }
-}
