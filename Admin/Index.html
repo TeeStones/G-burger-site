@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Burger — Admin</title>
+<title>Burger - Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -25,7 +25,6 @@
   a{color:inherit;}
   button{font-family:inherit; cursor:pointer;}
 
-  /* ---------- NAV (matches main site) ---------- */
   header.site-nav{background:var(--char); border-bottom:1px solid var(--line);}
   .nav-inner{
     max-width:1180px; margin:0 auto;
@@ -42,7 +41,6 @@
   .nav-right a{color:rgba(243,234,217,0.75); text-decoration:none; font-size:14px; font-weight:500;}
   .nav-right a:hover{color:var(--gold);}
 
-  /* ---------- LOGIN GATE ---------- */
   .gate{
     background:linear-gradient(180deg, var(--char) 0%, var(--char-2) 100%);
     min-height:70vh; display:flex; align-items:center; justify-content:center; padding:60px 24px;
@@ -70,7 +68,6 @@
   }
   .btn-primary:hover{background:#f0b34f;}
 
-  /* ---------- DASHBOARD ---------- */
   .dashboard{display:none; padding:56px 24px 100px;}
   .dashboard.open{display:block;}
   .dash-inner{max-width:760px; margin:0 auto;}
@@ -132,10 +129,10 @@
 
 <section class="gate" id="gate">
   <div class="gate-box">
-    <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#e8a33d" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="1.5"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+    <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#e8a33d" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="1.5"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg></div>
     <h1 class="gate-title">Site editor</h1>
     <p class="gate-sub">Enter the password to edit what visitors see on the main site.</p>
-    <div class="err" id="pwError">That password isn't right — try again.</div>
+    <div class="err" id="pwError">That password isn't right - try again.</div>
     <input type="password" id="pwInput" placeholder="Password" autofocus>
     <button class="btn-primary" id="pwSubmit">Unlock</button>
   </div>
@@ -147,13 +144,13 @@
     <p class="section-sub">Changes save live and appear immediately for every visitor to the main site.</p>
 
     <div class="panel">
-      <h3>Hero &amp; about</h3>
+      <h3>Hero and about</h3>
       <div class="field"><label>Hero tagline</label><textarea id="edit-tagline"></textarea></div>
       <div class="field"><label>About text</label><textarea id="edit-about"></textarea></div>
     </div>
 
     <div class="panel">
-      <h3>Contact &amp; hours</h3>
+      <h3>Contact and hours</h3>
       <div class="field-row">
         <div class="field"><label>Price range</label><input id="edit-price"></div>
         <div class="field"><label>Phone (digits only, with country code)</label><input id="edit-phone"></div>
@@ -176,13 +173,12 @@
 </main>
 
 <script>
-// The password now lives only on the server, as the ADMIN_PASSWORD
-// environment variable in Netlify — nothing sensitive ships in this file.
+var SITE_PASSWORD = "WuseGrill#47xK";
 
-const DEFAULTS = {
+var DEFAULTS = {
   tagline: "Thick milkshakes, char-grilled patties, and Wuse 2's most argued-about cheeseburger. Order in for pickup or delivery tonight.",
-  about: "A no-shortcuts burger counter in Wuse 2 — beef patties on the grill, buns toasted to order, shakes churned thick enough to need a spoon. Come hungry, leave full.",
-  price: "₦10,000–20,000 per person",
+  about: "A no-shortcuts burger counter in Wuse 2 - beef patties on the grill, buns toasted to order, shakes churned thick enough to need a spoon. Come hungry, leave full.",
+  price: "NGN 10,000-20,000 per person",
   addr: "55 Kumasi Cres, Wuse 2, Abuja",
   phone: "2347087271489",
   menu: [
@@ -192,26 +188,27 @@ const DEFAULTS = {
     {group:"Burgers", name:"Hot Chilly Cheeseburger", tag:"spicy"},
     {group:"Burgers", name:"House Chili Cheese Burger", tag:"spicy"},
     {group:"Burgers", name:"House Cheese Burger", tag:"classic"},
-    {group:"Shakes & Sides", name:"Vanilla Shake", tag:""},
-    {group:"Shakes & Sides", name:"Strawberry Milkshake", tag:""},
-    {group:"Shakes & Sides", name:"Oreo Vanilla Milkshake", tag:""},
-    {group:"Shakes & Sides", name:"2 in One Vanilla & Strawberry", tag:""},
-    {group:"Shakes & Sides", name:"Burger and Chili Cheese Fries", tag:""},
-    {group:"Shakes & Sides", name:"Double Patty Burger and Spicy Cheesy Chips", tag:""}
+    {group:"Shakes and Sides", name:"Vanilla Shake", tag:""},
+    {group:"Shakes and Sides", name:"Strawberry Milkshake", tag:""},
+    {group:"Shakes and Sides", name:"Oreo Vanilla Milkshake", tag:""},
+    {group:"Shakes and Sides", name:"2 in One Vanilla and Strawberry", tag:""},
+    {group:"Shakes and Sides", name:"Burger and Chili Cheese Fries", tag:""},
+    {group:"Shakes and Sides", name:"Double Patty Burger and Spicy Cheesy Chips", tag:""}
   ]
 };
 
-let content = JSON.parse(JSON.stringify(DEFAULTS));
-let sessionPassword = "";
+var content = JSON.parse(JSON.stringify(DEFAULTS));
+var sessionPassword = "";
 
-async function loadContent(){
-  try{
-    const res = await fetch('/.netlify/functions/content');
-    const data = await res.json();
-    if(data){
-      content = Object.assign({}, DEFAULTS, data);
-    }
-  }catch(e){ /* no saved content yet — defaults are fine */ }
+function loadContent(){
+  return fetch('/.netlify/functions/content')
+    .then(function(res){ return res.json(); })
+    .then(function(data){
+      if(data){
+        content = Object.assign({}, DEFAULTS, data);
+      }
+    })
+    .catch(function(e){ /* no saved content yet, or backend not reachable - defaults are fine */ });
 }
 
 function fillForm(){
@@ -224,100 +221,86 @@ function fillForm(){
 }
 
 function renderMenuEditor(){
-  const wrap = document.getElementById('menuEditorList');
+  var wrap = document.getElementById('menuEditorList');
   wrap.innerHTML = "";
-  content.menu.forEach((item, idx) => {
-    const row = document.createElement('div');
+  content.menu.forEach(function(item, idx){
+    var row = document.createElement('div');
     row.className = 'menu-row-edit';
-    row.innerHTML = `
-      <input class="group-input" data-idx="${idx}" data-field="group" value="${item.group}" placeholder="Group">
-      <input data-idx="${idx}" data-field="name" value="${item.name}" placeholder="Item name">
-      <input class="tag-input" data-idx="${idx}" data-field="tag" value="${item.tag||''}" placeholder="Tag">
-      <button data-remove="${idx}" title="Remove item" aria-label="Remove item">×</button>
-    `;
+    row.innerHTML =
+      '<input class="group-input" data-idx="' + idx + '" data-field="group" value="' + item.group + '" placeholder="Group">' +
+      '<input data-idx="' + idx + '" data-field="name" value="' + item.name + '" placeholder="Item name">' +
+      '<input class="tag-input" data-idx="' + idx + '" data-field="tag" value="' + (item.tag || '') + '" placeholder="Tag">' +
+      '<button data-remove="' + idx + '" title="Remove item" aria-label="Remove item">x</button>';
     wrap.appendChild(row);
   });
-  wrap.querySelectorAll('input').forEach(inp => {
-    inp.addEventListener('input', () => {
+  wrap.querySelectorAll('input').forEach(function(inp){
+    inp.addEventListener('input', function(){
       content.menu[+inp.dataset.idx][inp.dataset.field] = inp.value;
     });
   });
-  wrap.querySelectorAll('button[data-remove]').forEach(btn => {
-    btn.addEventListener('click', () => {
+  wrap.querySelectorAll('button[data-remove]').forEach(function(btn){
+    btn.addEventListener('click', function(){
       content.menu.splice(+btn.dataset.remove, 1);
       renderMenuEditor();
     });
   });
 }
 
-document.getElementById('addMenuItem').addEventListener('click', () => {
+document.getElementById('addMenuItem').addEventListener('click', function(){
   content.menu.push({group:"Burgers", name:"New item", tag:""});
   renderMenuEditor();
 });
 
-document.getElementById('saveBtn').addEventListener('click', async () => {
+document.getElementById('saveBtn').addEventListener('click', function(){
   content.tagline = document.getElementById('edit-tagline').value;
   content.about = document.getElementById('edit-about').value;
   content.price = document.getElementById('edit-price').value;
   content.addr = document.getElementById('edit-addr').value;
   content.phone = document.getElementById('edit-phone').value.replace(/\D/g,'');
 
-  const statusEl = document.getElementById('saveStatus');
-  try{
-    const res = await fetch('/.netlify/functions/content', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: sessionPassword, content })
-    });
+  var statusEl = document.getElementById('saveStatus');
+  fetch('/.netlify/functions/content', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: sessionPassword, content: content })
+  }).then(function(res){
     if(!res.ok){
-      statusEl.textContent = "Couldn't save — session expired, log in again.";
+      statusEl.textContent = "Couldn't save - the backend password doesn't match. Check the ADMIN_PASSWORD environment variable in Netlify.";
       statusEl.style.color = "#c1382b";
       return;
     }
-    statusEl.textContent = "Saved — live on the main site.";
+    statusEl.textContent = "Saved - live on the main site.";
     statusEl.style.color = "";
-    setTimeout(()=> statusEl.textContent = "", 3000);
-  }catch(e){
-    statusEl.textContent = "Couldn't save — try again.";
+    setTimeout(function(){ statusEl.textContent = ""; }, 4000);
+  }).catch(function(e){
+    statusEl.textContent = "Couldn't save - try again.";
     statusEl.style.color = "#c1382b";
-  }
+  });
 });
 
-document.getElementById('logoutBtn').addEventListener('click', () => {
+document.getElementById('logoutBtn').addEventListener('click', function(){
   document.getElementById('dashboard').classList.remove('open');
   document.getElementById('gate').style.display = "flex";
   document.getElementById('pwInput').value = "";
 });
 
-document.getElementById('pwSubmit').addEventListener('click', async () => {
-  const val = document.getElementById('pwInput').value;
-  const submitBtn = document.getElementById('pwSubmit');
-  const errEl = document.getElementById('pwError');
+document.getElementById('pwSubmit').addEventListener('click', function(){
+  var val = document.getElementById('pwInput').value;
+  var errEl = document.getElementById('pwError');
   errEl.style.display = "none";
-  submitBtn.textContent = "Checking…";
 
-  try{
-    const res = await fetch('/.netlify/functions/content', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: val, verifyOnly: true })
-    });
-    if(res.ok){
-      sessionPassword = val;
-      await loadContent();
+  if(val === SITE_PASSWORD){
+    sessionPassword = val;
+    loadContent().then(function(){
       fillForm();
       document.getElementById('gate').style.display = "none";
       document.getElementById('dashboard').classList.add('open');
-    }else{
-      errEl.style.display = "block";
-    }
-  }catch(e){
-    errEl.textContent = "Couldn't reach the server — try again.";
+    });
+  }else{
     errEl.style.display = "block";
   }
-  submitBtn.textContent = "Unlock";
 });
-document.getElementById('pwInput').addEventListener('keydown', (e) => {
+document.getElementById('pwInput').addEventListener('keydown', function(e){
   if(e.key === 'Enter') document.getElementById('pwSubmit').click();
 });
 </script>
