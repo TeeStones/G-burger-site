@@ -17,7 +17,7 @@ exports.handler = async (event) => {
       return { statusCode: 400, headers, body: JSON.stringify({ error: "Bad request" }) };
     }
 
-    if (body.password !== process.env.ADMIN_PASSWORD) {
+    if (body.password !== WuseGrill47xK ) {
       return { statusCode: 401, headers, body: JSON.stringify({ error: "Wrong password" }) };
     }
 
