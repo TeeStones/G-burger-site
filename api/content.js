@@ -1,8 +1,17 @@
-const { kv } = require("@vercel/kv");
+const { Redis } = require("@upstash/redis");
+
+// Vercel's Upstash Marketplace integration injects KV_REST_API_URL /
+// KV_REST_API_TOKEN when Vercel manages the Upstash account, or
+// UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN when you connect your
+// own Upstash account - this covers either case.
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN
+});
 
 module.exports = async (req, res) => {
   if (req.method === "GET") {
-    const data = await kv.get("content");
+    const data = await redis.get("content");
     return res.status(200).json(data || null);
   }
 
@@ -32,7 +41,7 @@ module.exports = async (req, res) => {
       return res.status(200).json({ ok: true });
     }
 
-    await kv.set("content", body.content);
+    await redis.set("content", body.content);
     return res.status(200).json({ ok: true });
   }
 
