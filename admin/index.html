@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G Burger - Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --char:#1f130d; --char-2:#2a1a11; --gold:#e8a33d; --ketchup:#c1382b;
+    --paper:#f3ead9; --paper-2:#ece0c9; --ink:#2a1d16; --pickle:#7c8a52;
+    --line: rgba(243,234,217,0.18);
+    --font-display:'Barlow Condensed', sans-serif; --font-body:'Karla', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--paper); color:var(--ink); font-family:var(--font-body); line-height:1.5;}
+  a{color:inherit;}
+  button{font-family:inherit; cursor:pointer;}
+
+  header.site-nav{background:var(--char); border-bottom:1px solid var(--line);}
+  .nav-inner{max-width:1180px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:14px 24px;}
+  .wordmark{font-family:var(--font-display); font-weight:800; font-size:26px; color:var(--paper);}
+  .wordmark span{color:var(--gold);}
+  .nav-right{display:flex; align-items:center; gap:18px;}
+  .admin-tag{font-size:12px; font-weight:700; color:var(--gold); border:1px solid rgba(232,163,61,0.45); padding:4px 10px; border-radius:100px;}
+  .nav-right a{color:rgba(243,234,217,0.75); text-decoration:none; font-size:14px; font-weight:500;}
+  .nav-right a:hover{color:var(--gold);}
+
+  .gate{background:linear-gradient(180deg, var(--char) 0%, var(--char-2) 100%); min-height:70vh; display:flex; align-items:center; justify-content:center; padding:60px 24px;}
+  .gate-box{width:100%; max-width:380px; text-align:left;}
+  .gate-box .icon{width:52px; height:52px; border-radius:50%; background:rgba(232,163,61,0.12); border:1px solid rgba(232,163,61,0.4); display:flex; align-items:center; justify-content:center; margin-bottom:22px;}
+  .gate-box .icon svg{width:20px; height:20px;}
+  h1.gate-title{font-family:var(--font-display); font-weight:800; font-size:38px; color:var(--paper); line-height:1;}
+  p.gate-sub{color:rgba(243,234,217,0.6); font-size:15px; margin:12px 0 26px;}
+  .gate-box input[type=password]{width:100%; padding:13px 14px; border:1px solid rgba(243,234,217,0.25); border-radius:4px; font-size:15px; margin-bottom:12px; background:rgba(243,234,217,0.06); color:var(--paper);}
+  .gate-box input[type=password]::placeholder{color:rgba(243,234,217,0.4);}
+  .gate-box .err{color:#e88b7c; font-size:13px; margin-bottom:12px; display:none;}
+  .btn-primary{background:var(--gold); color:var(--char); border:none; padding:13px 24px; border-radius:3px; font-weight:700; font-size:15px; width:100%; text-align:center;}
+  .btn-primary:hover{background:#f0b34f;}
+
+  .dashboard{display:none; padding:44px 24px 100px;}
+  .dashboard.open{display:block;}
+  .dash-inner{max-width:820px; margin:0 auto;}
+  h2.section-title{font-family:var(--font-display); font-weight:700; font-size:32px; margin-bottom:6px;}
+  p.section-sub{color:#6a5a4a; font-size:15px; margin-bottom:28px;}
+
+  .panel{background:#fff; border:1px solid rgba(42,29,22,0.12); border-radius:6px; padding:26px; margin-bottom:22px;}
+  .panel h3{font-family:var(--font-display); font-weight:700; font-size:19px; color:var(--ink); margin-bottom:16px;}
+  .field{margin-bottom:14px;}
+  .field:last-child{margin-bottom:0;}
+  .field label{display:block; font-size:12px; font-weight:700; color:#4a3a2c; margin-bottom:5px;}
+  .field input, .field textarea{width:100%; padding:9px 11px; border:1px solid rgba(42,29,22,0.25); border-radius:4px; font-family:inherit; font-size:14px; background:var(--paper);}
+  .field textarea{min-height:70px; resize:vertical;}
+  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .field-row-3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;}
+  @media (max-width:560px){.field-row, .field-row-3{grid-template-columns:1fr;}}
+
+  .cat-group-title{font-family:var(--font-display); font-weight:700; font-size:16px; color:var(--gold); background:var(--char); padding:8px 12px; border-radius:4px; margin:20px 0 12px;}
+  .cat-group-title:first-child{margin-top:0;}
+
+  .item-editor{border-top:1px solid rgba(42,29,22,0.12); padding-top:14px; margin-top:14px;}
+  .item-editor:first-child, .cat-group-title + .item-editor{border-top:none; margin-top:0; padding-top:0;}
+  .item-editor .row1{display:grid; grid-template-columns:2fr 100px; gap:10px; margin-bottom:8px;}
+  .item-editor .row1 input{font-size:13px;}
+  .item-editor textarea{width:100%; padding:7px 9px; font-size:12px; margin-bottom:8px; min-height:40px;}
+  .extras-compat{display:flex; gap:16px; font-size:12px; color:#4a3a2c;}
+  .extras-compat label{display:flex; align-items:center; gap:6px;}
+
+  .extra-editor{display:grid; grid-template-columns:2fr 100px; gap:10px; padding:8px 0; border-top:1px dashed rgba(42,29,22,0.15);}
+  .extra-editor:first-of-type{border-top:none;}
+  .extra-editor input{font-size:13px;}
+
+  .save-bar{position:sticky; bottom:0; background:var(--paper); padding:18px 0 4px; display:flex; align-items:center; gap:14px; border-top:1px solid rgba(42,29,22,0.1); margin-top:8px;}
+  .save-bar button{background:var(--gold); border:none; color:var(--char); font-weight:700; padding:13px 26px; border-radius:4px; font-size:15px;}
+  .save-bar .status{font-size:13px; color:var(--pickle);}
+  .logout-link{background:none; border:none; color:var(--ketchup); font-size:13px; text-decoration:underline; margin-left:auto;}
+</style>
+</head>
+<body>
+
+<header class="site-nav">
+  <div class="nav-inner">
+    <div class="wordmark">G BURGER<span>.</span></div>
+    <div class="nav-right">
+      <span class="admin-tag">Admin</span>
+      <a href="../index.html">View live site</a>
+      <a href="../staff/index.html">Kitchen view</a>
+    </div>
+  </div>
+</header>
+
+<section class="gate" id="gate">
+  <div class="gate-box">
+    <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#e8a33d" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="1.5"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg></div>
+    <h1 class="gate-title">Site editor</h1>
+    <p class="gate-sub">Enter the password to edit what visitors see on the main site.</p>
+    <div class="err" id="pwError">That password isn't right - try again.</div>
+    <input type="password" id="pwInput" placeholder="Password" autofocus>
+    <button class="btn-primary" id="pwSubmit">Unlock</button>
+  </div>
+</section>
+
+<main class="dashboard" id="dashboard">
+  <div class="dash-inner">
+    <h2 class="section-title">G Burger admin</h2>
+    <p class="section-sub">Changes save live and appear immediately for every visitor to the main site. Kitchen stock toggles live on the separate kitchen view.</p>
+
+    <div class="panel">
+      <h3>Hero and about</h3>
+      <div class="field"><label>Hero tagline</label><textarea id="edit-tagline"></textarea></div>
+      <div class="field"><label>About text</label><textarea id="edit-about"></textarea></div>
+    </div>
+
+    <div class="panel">
+      <h3>Contact and hours</h3>
+      <div class="field-row">
+        <div class="field"><label>Price range (shown in the stats bar)</label><input id="edit-price"></div>
+        <div class="field"><label>General phone (calls)</label><input id="edit-phone"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Address (short, for stats bar)</label><input id="edit-addrShort"></div>
+        <div class="field"><label>Pickup order WhatsApp number</label><input id="edit-orderWhatsapp"></div>
+      </div>
+      <div class="field"><label>Full address</label><input id="edit-addr"></div>
+      <div class="field"><label>VAT note</label><input id="edit-vatNote"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Payment details (Moniepoint)</h3>
+      <div class="field-row-3">
+        <div class="field"><label>Bank</label><input id="edit-pay-bank"></div>
+        <div class="field"><label>Account number</label><input id="edit-pay-acct"></div>
+        <div class="field"><label>Account name</label><input id="edit-pay-name"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Extras (add-ons)</h3>
+      <div id="extrasEditorList"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Menu items</h3>
+      <div id="menuEditorList"></div>
+    </div>
+
+    <div class="save-bar">
+      <button id="saveBtn">Save changes</button>
+      <span class="status" id="saveStatus"></span>
+      <button class="logout-link" id="logoutBtn">Log out</button>
+    </div>
+  </div>
+</main>
+
+<script>
+var SITE_PASSWORD = "WuseGrill#47xK";
+
+var DEFAULTS = {
+  tagline: "Fresh halal beef patties and hand-cut fries - Wuse 2's go-to burger counter. Order ahead for pickup, pay by transfer, skip the wait.",
+  about: "A no-shortcuts burger counter in Wuse 2 - beef patties made from fresh 100% halal beef, no additives or fillers, grilled to order and topped with our own sauces.",
+  price: "NGN 300 - 9,500",
+  addr: "55 Kumasi Cres, Wuse 2, Abuja 900288, Federal Capital Territory",
+  addrShort: "55 Kumasi Cres, Wuse 2, Abuja",
+  phone: "2347087271489",
+  orderWhatsapp: "2348039928099",
+  vatNote: "All prices inclusive of VAT.",
+  moniepoint: { bank: "Moniepoint", accountNumber: "8224998551", accountName: "Galaxy Burger" },
+  extras: [
+    { key: "beefPatty", name: "Extra Beef Patty", price: 1500 },
+    { key: "cheese", name: "Extra Cheese", price: 1000 }
+  ],
+  menuItems: [
+    { key:"house-beef", name:"House Beef Burger", price:7500, extras:["beefPatty","cheese"], category:"The House Burgers",
+      desc:"Gburger style smashed beef patty, house coleslaw, signature vinaigrette seasoned grilled onions, premium mustard mayo on a soft potato bun" },
+    { key:"house-cheese", name:"House Cheese Burger", price:8000, extras:["beefPatty","cheese"], category:"The House Burgers",
+      desc:"Gburger style smashed beef patty, house coleslaw, signature vinaigrette seasoned grilled onions, premium mustard mayo, melted cheese on a soft potato bun" },
+    { key:"house-double", name:"House Double Burger", price:8500, extras:["beefPatty","cheese"], category:"The House Burgers",
+      desc:"Gburger style double smashed beef patty, house coleslaw, signature vinaigrette, seasoned grilled onions, premium mustard mayo on a soft potato bun" },
+    { key:"house-double-double", name:"House Double Double", price:9500, extras:["beefPatty","cheese"], category:"The House Burgers",
+      desc:"Gburger style double smashed beef patty, double melted cheese, house coleslaw, signature vinaigrette, seasoned grilled onions, premium mustard mayo on a soft potato bun" },
+    { key:"g-mex", name:"G-Mex Chilli Cheese Burger", price:8000, extras:["beefPatty","cheese"], category:"The G-Burgers",
+      desc:"Gburger style smashed beef patty, premium cheese, G sauce, texmex chilli, crisp salad, seasoned grilled onions on a soft potato bun" },
+    { key:"big-g", name:"Big G", price:9000, extras:["beefPatty","cheese"], category:"The G-Burgers",
+      desc:"Gburger style double smashed beef patty, premium cheese, G sauce, seasoned grilled onions, crisp salad on a soft potato bun club cut" },
+    { key:"fries", name:"Fries", price:4500, extras:["cheese"], category:"Fries",
+      desc:"Premium fries deep fried served with ketchup" },
+    { key:"chilli-cheese-fries", name:"Chilli Cheese Fries", price:6800, extras:["cheese"], category:"Fries",
+      desc:"Premium fries deep fried topped with texmex chilli, house coleslaw, seasoned grilled onions, ketchup, signature vinaigrette sauce, melted cheese" },
+    { key:"strawberry-shake", name:"Strawberry Shake", price:6500, extras:[], category:"Milk Shakes", desc:"" },
+    { key:"vanilla-shake", name:"Vanilla Shake", price:6500, extras:[], category:"Milk Shakes", desc:"" },
+    { key:"chocolate-shake", name:"Chocolate Shake", price:6500, extras:[], category:"Milk Shakes", desc:"" },
+    { key:"cocktail-shake", name:"Cocktail Shake", price:6500, extras:[], category:"Milk Shakes", desc:"Vanilla, strawberry and chocolate mix" },
+    { key:"bottled-water", name:"Bottled Water", price:300, extras:[], category:"Drinks", desc:"" },
+    { key:"pop-drinks", name:"Pop Drinks", price:500, extras:[], category:"Drinks", desc:"" },
+    { key:"espresso", name:"Espresso", price:2000, extras:[], category:"G Cafe", desc:"" },
+    { key:"cappuccino", name:"Cappuccino", price:4000, extras:[], category:"G Cafe", desc:"" },
+    { key:"americano", name:"Americano", price:3000, extras:[], category:"G Cafe", desc:"" },
+    { key:"mocha", name:"Mocha", price:4000, extras:[], category:"G Cafe", desc:"" },
+    { key:"frappuccino", name:"Frappuccino", price:6500, extras:[], category:"G Cafe", desc:"" },
+    { key:"caramel-frappuccino", name:"Caramel Frappuccino", price:6500, extras:[], category:"G Cafe", desc:"" },
+    { key:"tea", name:"Tea", price:2500, extras:[], category:"G Cafe", desc:"" },
+    { key:"spanish-iced-latte", name:"Spanish Iced Latte", price:4000, extras:[], category:"G Cafe", desc:"" }
+  ]
+};
+
+var content = JSON.parse(JSON.stringify(DEFAULTS));
+var sessionPassword = "";
+
+function loadContent(){
+  return fetch('/api/content')
+    .then(function(res){ return res.json(); })
+    .then(function(data){ if(data){ content = Object.assign({}, DEFAULTS, data); } })
+    .catch(function(e){ /* defaults are fine */ });
+}
+
+function fillForm(){
+  document.getElementById('edit-tagline').value = content.tagline;
+  document.getElementById('edit-about').value = content.about;
+  document.getElementById('edit-price').value = content.price;
+  document.getElementById('edit-phone').value = content.phone;
+  document.getElementById('edit-addrShort').value = content.addrShort || "";
+  document.getElementById('edit-orderWhatsapp').value = content.orderWhatsapp || "";
+  document.getElementById('edit-addr').value = content.addr;
+  document.getElementById('edit-vatNote').value = content.vatNote || "";
+  document.getElementById('edit-pay-bank').value = content.moniepoint.bank;
+  document.getElementById('edit-pay-acct').value = content.moniepoint.accountNumber;
+  document.getElementById('edit-pay-name').value = content.moniepoint.accountName;
+  renderExtrasEditor();
+  renderMenuEditor();
+}
+
+function renderExtrasEditor(){
+  var wrap = document.getElementById('extrasEditorList');
+  wrap.innerHTML = "";
+  content.extras.forEach(function(ex, idx){
+    var row = document.createElement('div');
+    row.className = 'extra-editor';
+    row.innerHTML =
+      '<input data-extra-idx="' + idx + '" data-field="name" value="' + ex.name + '" placeholder="Extra name">' +
+      '<input data-extra-idx="' + idx + '" data-field="price" value="' + ex.price + '" placeholder="Price">';
+    wrap.appendChild(row);
+  });
+  wrap.querySelectorAll('input').forEach(function(inp){
+    inp.addEventListener('input', function(){
+      var idx = +inp.dataset.extraIdx;
+      var field = inp.dataset.field;
+      content.extras[idx][field] = field === 'price' ? (Number(inp.value) || 0) : inp.value;
+    });
+  });
+}
+
+function renderMenuEditor(){
+  var wrap = document.getElementById('menuEditorList');
+  wrap.innerHTML = "";
+  var lastCategory = null;
+
+  content.menuItems.forEach(function(item, idx){
+    if(item.category !== lastCategory){
+      var heading = document.createElement('div');
+      heading.className = 'cat-group-title';
+      heading.textContent = item.category;
+      wrap.appendChild(heading);
+      lastCategory = item.category;
+    }
+
+    var block = document.createElement('div');
+    block.className = 'item-editor';
+    var extrasCompatHtml = content.extras.map(function(ex){
+      var checked = item.extras.indexOf(ex.key) !== -1 ? 'checked' : '';
+      return '<label><input type="checkbox" data-item-idx="' + idx + '" data-extra-key="' + ex.key + '" ' + checked + '> ' + ex.name + '</label>';
+    }).join('');
+
+    block.innerHTML =
+      '<div class="row1">' +
+        '<input data-item-idx="' + idx + '" data-field="name" value="' + item.name + '" placeholder="Item name">' +
+        '<input data-item-idx="' + idx + '" data-field="price" value="' + item.price + '" placeholder="Price">' +
+      '</div>' +
+      '<textarea data-item-idx="' + idx + '" data-field="desc" placeholder="Description">' + item.desc + '</textarea>' +
+      '<div class="extras-compat">' + extrasCompatHtml + '</div>';
+    wrap.appendChild(block);
+  });
+
+  wrap.querySelectorAll('input[data-field], textarea[data-field]').forEach(function(inp){
+    inp.addEventListener('input', function(){
+      var idx = +inp.dataset.itemIdx;
+      var field = inp.dataset.field;
+      content.menuItems[idx][field] = field === 'price' ? (Number(inp.value) || 0) : inp.value;
+    });
+  });
+  wrap.querySelectorAll('input[data-extra-key]').forEach(function(cb){
+    cb.addEventListener('change', function(){
+      var idx = +cb.dataset.itemIdx;
+      var key = cb.dataset.extraKey;
+      var item = content.menuItems[idx];
+      var pos = item.extras.indexOf(key);
+      if(cb.checked && pos === -1){ item.extras.push(key); }
+      if(!cb.checked && pos !== -1){ item.extras.splice(pos, 1); }
+    });
+  });
+}
+
+document.getElementById('saveBtn').addEventListener('click', function(){
+  content.tagline = document.getElementById('edit-tagline').value;
+  content.about = document.getElementById('edit-about').value;
+  content.price = document.getElementById('edit-price').value;
+  content.phone = document.getElementById('edit-phone').value.replace(/\D/g,'');
+  content.addrShort = document.getElementById('edit-addrShort').value;
+  content.orderWhatsapp = document.getElementById('edit-orderWhatsapp').value.replace(/\D/g,'');
+  content.addr = document.getElementById('edit-addr').value;
+  content.vatNote = document.getElementById('edit-vatNote').value;
+  content.moniepoint = {
+    bank: document.getElementById('edit-pay-bank').value,
+    accountNumber: document.getElementById('edit-pay-acct').value,
+    accountName: document.getElementById('edit-pay-name').value
+  };
+
+  var statusEl = document.getElementById('saveStatus');
+  fetch('/api/content', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: sessionPassword, content: content })
+  }).then(function(res){
+    if(!res.ok){
+      statusEl.textContent = "Couldn't save - the backend password doesn't match the ADMIN_PASSWORD environment variable.";
+      statusEl.style.color = "#c1382b";
+      return;
+    }
+    statusEl.textContent = "Saved - live on the main site.";
+    statusEl.style.color = "";
+    setTimeout(function(){ statusEl.textContent = ""; }, 4000);
+  }).catch(function(e){
+    statusEl.textContent = "Couldn't save - try again.";
+    statusEl.style.color = "#c1382b";
+  });
+});
+
+document.getElementById('logoutBtn').addEventListener('click', function(){
+  document.getElementById('dashboard').classList.remove('open');
+  document.getElementById('gate').style.display = "flex";
+  document.getElementById('pwInput').value = "";
+});
+
+document.getElementById('pwSubmit').addEventListener('click', function(){
+  var val = document.getElementById('pwInput').value;
+  var errEl = document.getElementById('pwError');
+  errEl.style.display = "none";
+  if(val === SITE_PASSWORD){
+    sessionPassword = val;
+    loadContent().then(function(){
+      fillForm();
+      document.getElementById('gate').style.display = "none";
+      document.getElementById('dashboard').classList.add('open');
+    });
+  }else{
+    errEl.style.display = "block";
+  }
+});
+document.getElementById('pwInput').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') document.getElementById('pwSubmit').click();
+});
+</script>
+</body>
+</html>
